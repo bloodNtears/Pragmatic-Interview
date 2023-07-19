@@ -5,35 +5,30 @@ type TreeNode struct {
 	Parent *TreeNode
 }
 
-func findNearestCommonAncestor(node1, node2 *TreeNode) *TreeNode {
-	if node1 == node2 {
-		return node1
+func isDescendant(node, target *TreeNode) bool {
+	if node == nil {
+		return false
 	}
-	depth1 := findDepth(node1)
-	depth2 := findDepth(node2)
-	for depth1 > depth2 {
-		node1 = node1.Parent
-		depth1--
+	if node == target {
+		return true
 	}
-	for depth2 > depth1 {
-		node2 = node2.Parent
-		depth2--
-	}
-	
-	for node1 != node2 {
-		node1 = node1.Parent
-		node2 = node2.Parent
-	}
-	return node1
+	return isDescendant(node.Parent, target)
 }
 
-func findDepth(node *TreeNode) int {
-	depth := 0
-	for node != nil {
-		depth++
-		node = node.Parent
+func findNearestCommonAncestor(node1, node2 *TreeNode) *TreeNode {
+	if node1 == nil || node2 == nil {
+		return nil
 	}
-	return depth
+
+	currentNode := node1
+	for currentNode != nil {
+		if isDescendant(node2, currentNode) {
+			return currentNode
+		}
+		currentNode = currentNode.Parent
+	}
+
+	return nil
 }
 
 func main() {
@@ -42,8 +37,10 @@ func main() {
 	nodeF := &TreeNode{Value: "F", Parent: nodeE}
 	nodeA := &TreeNode{Value: "A", Parent: nodeF}
 	nodeB := &TreeNode{Value: "B", Parent: nodeE}
+	nodeG := &TreeNode{Value: "G", Parent: nodeB}
+	nodeK := &TreeNode{Value: "K", Parent: nodeG}
 
-	commonAncestor := findNearestCommonAncestor(nodeA, nodeB)
+	commonAncestor := findNearestCommonAncestor(nodeA, nodeK)
 	if commonAncestor != nil {
 		println("The nearest common ancestor is node:", commonAncestor.Value)
 	} else {
