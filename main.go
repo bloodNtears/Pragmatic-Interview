@@ -6,54 +6,35 @@ type TreeNode struct {
 }
 
 func findNearestCommonAncestor(node1, node2 *TreeNode) *TreeNode {
-	visited := make(map[*TreeNode]bool)
+	ptr1, ptr2 := node1, node2
 
-	for node1 != nil {
-		visited[node1] = true
-		node1 = node1.Parent
-	}
-	
-	for node2 != nil {
-		if visited[node2] {
-			return node2
-		}
-		node2 = node2.Parent
+	for ptr1 != ptr2 {
+		ptr1 = getNextNode(ptr1, node2)
+		ptr2 = getNextNode(ptr2, node1)
 	}
 
-	return nil
+	return ptr1
 }
 
+func getNextNode(currentNode, targetNode *TreeNode) *TreeNode {
+	if currentNode == nil {
+		return targetNode
+	}
+	return currentNode.Parent
+}
 
 func main() {
-	nodeR := &TreeNode{
-		Value:  "R",
-		Parent: nil,
-	}
-	nodeE := &TreeNode{
-		Value:  "E",
-		Parent: nodeR,
-	}
-	nodeF := &TreeNode{
-		Value:  "F",
-		Parent: nodeE,
-	}
-	nodeA := &TreeNode{
-		Value:  "A",
-		Parent: nodeF,
-	}
-	//nodeG := &TreeNode{
-	//	Value: "G",
-	//	Parent: nodeF,
-	//}
-	nodeB := &TreeNode{
-		Value:  "B",
-		Parent: nodeE,
-	}
+	nodeR := &TreeNode{Value: "R", Parent: nil}
+	nodeE := &TreeNode{Value: "E", Parent: nodeR}
+	nodeF := &TreeNode{Value: "F", Parent: nodeE}
+	nodeA := &TreeNode{Value: "A", Parent: nodeF}
+	nodeB := &TreeNode{Value: "B", Parent: nodeE}
+	//nodeS := &TreeNode{Value: "S", Parent: nil}
 
 	commonAncestor := findNearestCommonAncestor(nodeA, nodeB)
 	if commonAncestor != nil {
 		println("The nearest common ancestor is node:", commonAncestor.Value)
 	} else {
-		println("No common ancestor found.")
+		println("No common ancestor found (or common ancestor is tree's root).")
 	}
 }
